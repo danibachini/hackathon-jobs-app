@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userID            Int        @id @default(autoincrement())
+  firstname         String
+  lastname          String
+  password          String
+  email             String      @unique
+  role              Role        // Peut-être 'Recruteur' ou 'Candidat'
+  skillTree         SkillTree[] @relation("UserTree")
+  task              UserTask[]
+}
+
+model SkillTree {
+  treeID          Int        @id @default(autoincrement())
+  titre            String
+  description      String
+  userID           Int
+  user             User      @relation(fields: [userID], references: [userID], name: "UserTree")
+  task             TreeTask[]
+}
+
+model Task {
+  taskID           Int       @id @default(autoincrement())
+  description      String
+  niveauDifficulte Int
+  trees            TreeTask[]
+  users            UserTask[]
+}
+
+model TreeTask {
+  treeID          Int
+  taskID          Int
+  statusTask      String?          // Optionnel, exemple: 'Complété', 'En attente'
+  trees           SkillTree @relation(fields: [treeID], references: [treeID])
+  task            Task      @relation(fields: [taskID], references: [taskID])
+
+  @@id([treeID, taskID])
+}
+
+model UserTask {
+  userID           Int
+  taskID           Int
+  completionDate   DateTime?
+  status           String?          // Optionnel, exemple: 'Complété', 'En cours'
+  user             User      @relation(fields: [userID], references: [userID])
+  task             Task      @relation(fields: [taskID], references: [taskID])
+
+  @@id([userID, taskID])
+}
+
+enum Role {
+  CANDIDATE
+  ADMIN
+  RECRUITER
+}

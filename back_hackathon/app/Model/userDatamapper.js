@@ -1,4 +1,5 @@
-const con = require('../mysql_client');
+// const con = require('../mysql_client');
+const prisma = require("../mysql_client")
 
 const userDataMapper = {
   async signIn(loginInformations) {
@@ -27,6 +28,7 @@ const userDataMapper = {
   },
 
   async signUp(user) {
+    console.log(prisma)
     try {
       const sqlQuery = `SELECT * FROM users WHERE email='${user.email}'`;
       const values = [user];
