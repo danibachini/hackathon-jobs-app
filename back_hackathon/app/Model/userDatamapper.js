@@ -10,7 +10,7 @@ const userDataMapper = {
 
       console.log("loginInformations : linfo est" );
 
-      console.log(values);
+      console.log(values); 
       console.log(response);
 
       console.log(result, 'contenu de mon entrant');  

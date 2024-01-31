@@ -1,8 +1,6 @@
 require('dotenv').config();
 const mysql = require('mysql');
 
-console.log('THE KEY IS: ', process.env.DB_KEY);
-
 const con = mysql.createConnection({
     host: "mysql-hackathon.alt-tools.tech",
     port: 3306,
