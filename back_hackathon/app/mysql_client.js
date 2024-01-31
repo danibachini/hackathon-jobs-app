@@ -1,20 +1,5 @@
-require('dotenv').config();
-const mysql = require('mysql');
+const {PrismaClient} = require("@prisma/client")
 
-const con = mysql.createConnection({
-    host: "mysql-hackathon.alt-tools.tech",
-    port: 3306,
-    user: "cgi",
-    password: process.env.DB_KEY,
-    database: "cgi_db"
-  });
-  
-con.connect(function(err) {
-    if (err) {
-        console.error('Error connecting to the database:', err.message);
-        throw err;
-    }
-    console.log("Connected!");
-});
+const prisma = new PrismaClient()
 
-module.exports=con;
+module.exports.prisma = prisma;
