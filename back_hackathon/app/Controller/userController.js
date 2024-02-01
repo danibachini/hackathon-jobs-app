@@ -2,63 +2,56 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userDatamapper = require("../Model/userDatamapper");
+const {prisma} = require("../mysql_client")
+const userService = require("../Services/userService")
 
 
 const userController = {
   async signUp(req, res, next) {
-    const newUser = req.body;
-    // Récupération des données de la nouvelle personne à partir de la requête (req.body)
-    const existingUser = await userDatamapper.signUp(newUser);
-
-    if (existingUser.result) {
-      return res.status(400).json({ message: "Ce mail existe déjà, veuillez en choisir un autre." });
-      // Retourne un objet JSON avec la propriété "message" contenant le message d'erreur
-    } else {
-      try {
-        const hashedPassword = await bcrypt.hash(newUser.password, parseInt(process.env.SALT));
-        // Chiffrement du mot de passe de la nouvelle personne en utilisant bcrypt
-        newUser.password = hashedPassword;
-        // Remplacement du mot de passe non chiffré par le mot de passe chiffré dans les données de la nouvelle personne
-        const usercreated = await userDatamapper.signUp(newUser);
-        // Appel de la fonction signUp du userDataMapper pour ajouter la nouvelle personne en base de données
-        return res.status(200).json({ message: "Utilisateur créé avec succès.", user: usercreated });
-        // Retourne un objet JSON avec la propriété "message" indiquant que l'utilisateur a été créé avec succès
-      } catch (error) {
-        return res.status(500);
-        // Retourne un objet JSON avec la propriété "message" indiquant une erreur lors de la création de l'utilisateur
+    try {
+      const newUser = req.body;
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          email: newUser.email,
+        },
+      });
+  
+      if (existingUser) {
+        return res.status(400).json({ message: "A user with this email already exists!" });
       }
+  
+      const hashedPassword = await userService.passwordHasher(newUser.password);
+      newUser.password = hashedPassword;
+  
+      const userCreated = await userDatamapper.signUp(newUser);
+      return res.status(201).json({ message: "User created successfully.", user: userCreated });
+    } catch (err) {
+      console.error("Error in userController.signUp:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+
+  },
+  signIn: async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+      const token = await userDatamapper.signIn({email, password});
+      res.json({ message: 'Logged in successfully', token });
+    } catch (error) {
+      if (error.message === 'Invalid email or password') {
+        return res.status(401).json({ message: error.message });
+      }
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred' });
     }
   },
-  signIn: async (req, res, next) => {
-    try {
-      const { password, mail } = req.body;
-      // Extraction des données password et email de la requête (req.body)
-      const { error, result } = await userDatamapper.getUserByEmail({ mail: mail });
-
-      consol.log(password, mail , 'contenu de mon entrant');  
-          // Appel de la fonction getPersonsByEmail du userDataMapper pour récupérer la personne correspondant à l'email fourni
-      if (error) {
-        next(error);
-      } else {
-        if (!result) {
-          return res.json('couple mail mdp incorrect');
-          // Retourne un objet JSON indiquant que le couple email/mot de passe est incorrect
-        }
-        const userName = result.name;
-        const id = result.id;
-        const passwordCorrect = await bcrypt.compare(password, result.password);
-        // Comparaison du mot de passe fourni avec le mot de passe en base de données
-        if (!passwordCorrect) {
-          return res.json('couple mail mdp incorrect');
-          // Retourne un objet JSON indiquant que le couple email/mot de passe est incorrect
-        };
-
-        const token = jwt.sign({ mail: mail, first_name:userName, id:id }, process.env.JWT_SECRET);
-        // Création d'un token JWT avec les données souhaitées
-        return res.json({ message: "Utilisateur connecté avec succès.", token, first_name, id, mail });
-        // Retourne un objet JSON avec la propriété "message" indiquant que l'utilisateur s'est connecté avec succès et le token
-      }}catch(error){
-        return res.status(500);
+    async getAllUsers(req, res, next){
+      try {
+        const users = await userDatamapper.getUsers()
+        res.status(200).send(users)
+      }
+      catch(err){
+        res.send(500).send({"error": err})
       }
     },
     checkToken(req,res,next){

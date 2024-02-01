@@ -22,7 +22,7 @@ model User {
 }
 
 model SkillTree {
-  treeID          Int        @id @default(autoincrement())
+  treeID           Int       @id @default(autoincrement())
   titre            String
   description      String
   userID           Int
