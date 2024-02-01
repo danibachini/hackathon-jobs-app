@@ -16,13 +16,13 @@ model User {
   lastname          String
   password          String
   email             String      @unique
-  role              Role        // Peut-être 'Recruteur' ou 'Candidat'
+  role              Role        // Peut être 'Recruteur' ou 'Candidat'
   skillTree         SkillTree[] @relation("UserTree")
   task              UserTask[]
 }
 
 model SkillTree {
-  treeID          Int        @id @default(autoincrement())
+  treeID           Int        @id @default(autoincrement())
   titre            String
   description      String
   userID           Int
