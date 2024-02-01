@@ -9,9 +9,9 @@ const schemaUserInput = Joi.object({
     // Définition du schéma de validation pour les données d'inscription
     email: Joi.string().email().required(),
     // Champ "email" doit être une chaîne de caractères au format email et est requis
-    last_name: Joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_-]{2,14}$')),
-    first_name: Joi.string().required(),
-    profile: Joi.string().valid('candidate', 'company', 'admin').required(),
+    lastname: Joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_-]{2,14}$')),
+    firstname: Joi.string().required(),
+    role: Joi.string().valid('candidate', 'company', 'admin').required(),
     // Champ "name" doit suivre un certain modèle (regex)
     password: Joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_-]{6,18}$')),
     // Champ "password" doit suivre un certain modèle (regex)
