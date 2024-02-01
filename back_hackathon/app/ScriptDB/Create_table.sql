@@ -6,7 +6,15 @@ CREATE TABLE users (
     last_name           TEXT NOT NULL,
     email               VARCHAR(255) NOT NULL UNIQUE,
     password            VARCHAR(60) NOT NULL,
-    profile             ENUM ('candidate', 'company', 'admin')
+    profile             VARCHAR(20) CHECK (profile IN ('candidate', 'company', 'admin'))
+);
+
+CREATE TABLE trees (
+    id                  SERIAL PRIMARY KEY,
+    task_position       INT, 
+    task_id             INT,
+    user_id             INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE candidate (
@@ -30,15 +38,6 @@ CREATE TABLE recruiter (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE trees (
-    id                  SERIAL PRIMARY KEY,
-    task_position       INT, 
-    task_id             INT,
-    user_id             INT,
-    FOREIGN KEY (task_id) REFERENCES tasks(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
 CREATE TABLE tasks (
     id                  SERIAL PRIMARY KEY,
     name                TEXT NOT NULL,
@@ -48,6 +47,10 @@ CREATE TABLE tasks (
     finished            BOOLEAN DEFAULT FALSE,
     tree_id             INT REFERENCES trees(id)
 );
+
+ALTER TABLE trees
+    ADD CONSTRAINT fk_tasks_tree_id FOREIGN KEY (task_id) REFERENCES tasks(id);
+
 
 COMMIT;
 
