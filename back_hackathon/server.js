@@ -1,5 +1,5 @@
 require('dotenv').config();
-const con = require('./app/mysql_client');
+const con = require('./app/prisma_client');
 const mysql = require('mysql');
 const express = require('express');
 const cors = require('cors');

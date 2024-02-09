@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userDatamapper = require("../Model/userDatamapper");
-const {prisma} = require("../mysql_client")
+const {prisma} = require("../prisma_client")
 const userService = require("../Services/userService")
 
 

@@ -1,5 +1,5 @@
 const userService = require('../Services/userService');
-const {prisma} = require('../mysql_client');
+const {prisma} = require('../prisma_client');
 const jwt = require('jsonwebtoken');
 
 const userDataMapper = {
@@ -16,16 +16,19 @@ const userDataMapper = {
     }
   },
   async signIn({email, password}) {
+    console.log('THIS IS EMAIL: ', email);
+    // console.log('THIS IS password: ', password);
     try {
-  
+
       const user = await prisma.user.findUnique({
-        where: { email },
+      where: { email },
       });
+      console.log('THIS IS USER: ', user);
     
       if (!user || !await userService.passwordCompare(password, user.password)) {
         throw new Error('Invalid email or password');
       }
-    
+      
       const token = jwt.sign({ userId: user.userID, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
       return token;
 
@@ -59,4 +62,4 @@ const userDataMapper = {
   },
 };
 
-// module.exports = userDataMapper;
+module.exports = userDataMapper;

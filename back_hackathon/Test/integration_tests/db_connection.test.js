@@ -1,4 +1,4 @@
-import { prisma } from '../../app/mysql_client';
+import { prisma } from '../../app/prisma_client';
 import { describe, expect, it } from 'vitest';
 
 describe('Db connection', () => {
