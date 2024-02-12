@@ -1,9 +1,11 @@
-require('dotenv').config();
-const con = require('./app/prisma_client');
-const mysql = require('mysql');
-const express = require('express');
-const cors = require('cors');
-const app = express();
+import dotenv from "dotenv"
+import express from 'express';
+import cors from 'cors';
+import {router} from './app/router';
+
+dotenv.config()
+
+export const app = express();
 
 
 // ------ Mise en place de sécurité -> pentest 06/10 ------
@@ -37,7 +39,6 @@ app.use((req, res, next) => {
 app.use(cors(corsOptions));
 
 
-const router = require('./app/router');
 app.use(express.json());
 
 
@@ -52,5 +53,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Listening at http://localhost:${PORT} …`);
 });
-
-module.exports = con;
