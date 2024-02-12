@@ -5,7 +5,6 @@ import { Role } from "@prisma/client"
 
 vi.mock("../../libs/prisma")
 
-
 describe("Unit tests", ()=>{
     it("should create a user", async ()=>{
         const mockUser = {firstname: "Adam", lastname: "Silver", email: "adam@prisma.com", password: "hashedpass", role: Role.CANDIDATE}
