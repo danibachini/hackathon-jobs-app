@@ -7,7 +7,13 @@ vi.mock("../../libs/prisma")
 
 describe("Unit tests", ()=>{
     it("should create a user", async ()=>{
-        const mockUser = {firstname: "Adam", lastname: "Silver", email: "adam@prisma.com", password: "hashedpass", role: Role.CANDIDATE}
+        const mockUser = {
+            firstname: "Adam", 
+            lastname: "Silver", 
+            email: "adam@prisma.com", 
+            password: "hashedpass", 
+            role: Role.CANDIDATE
+        }
         prisma.user.create.mockResolvedValue({...mockUser, userID: 1})
         const user = await createUser(mockUser)
         expect(user).toStrictEqual({...mockUser, userID: 1})
