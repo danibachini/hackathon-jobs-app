@@ -5,6 +5,8 @@ import prisma from "../../libs/__mocks__/prisma"
 vi.mock("../../libs/prisma")
 
 describe("Unit test", () => {
+    let task:any;
+
     it("should create a new task", async () => {
         const mockTask = {
             description: "This is a test task",
@@ -27,8 +29,23 @@ describe("Unit test", () => {
         }
 
         prisma.task.create.mockResolvedValue({...mockTask, taskID: 1})
-        const task = await prisma.task.create({data: mockTask as any})
+        task = await prisma.task.create({ data: mockTask as any })
         expect(task.taskID).toBe(1)
         expect(task).not.toBe(null)
+    })
+
+    it("should update the created task", async () => {
+        const taskDescriptionUpdate = { description: "This is the updated description" }
+        const updatedTask = { ...task, ...taskDescriptionUpdate }
+        prisma.task.update.mockResolvedValue(updatedTask)
+        
+        const updatedTaskFromDb = await prisma.task.update({
+            where: {
+                taskID: task.taskID,
+            },
+            data: updatedTask
+        })
+        expect(updatedTaskFromDb).toEqual(updatedTask)
+
     })
 })
