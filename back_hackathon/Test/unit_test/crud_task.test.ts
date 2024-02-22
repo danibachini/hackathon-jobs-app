@@ -14,14 +14,12 @@ describe("Unit test", () => {
             trees: [
                 {
                     treeID: 1,
-                    // taskID: 1,
                     statusTask: "Completed"
                 }
             ],
             users: [
                 {
                     userID: 1,
-                    // taskID: 1,
                     completionDate: "2021-09-27",
                     status: "Completed"
                 }
@@ -38,7 +36,7 @@ describe("Unit test", () => {
         const taskDescriptionUpdate = { description: "This is the updated description" }
         const updatedTask = { ...task, ...taskDescriptionUpdate }
         prisma.task.update.mockResolvedValue(updatedTask)
-        
+
         const updatedTaskFromDb = await prisma.task.update({
             where: {
                 taskID: task.taskID,
@@ -46,6 +44,13 @@ describe("Unit test", () => {
             data: updatedTask
         })
         expect(updatedTaskFromDb).toEqual(updatedTask)
+    })
 
+    it("should delete the task created", async () => {
+        const deleteTask = await prisma.task.delete({
+            where: {
+                taskID: task.taskID
+            },
+        })
     })
 })
