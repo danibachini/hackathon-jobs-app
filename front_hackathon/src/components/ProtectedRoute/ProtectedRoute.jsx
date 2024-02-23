@@ -1,8 +1,18 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate, useLocation, Outlet } from 'react-router-dom'
+import {useAuth} from "../../hooks/useAuth"
 
-export default function ProtectedRoute() {
-  return (
-    <div>ProtectedRoute</div>
-  )
+export default function ProtectedRoute({children}) {
+
+  const {isAuthenticated} = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!isAuthenticated){
+      navigate("/sign-in")
+    }
+  }, [navigate, isAuthenticated])
+
+  return children
+
 }
