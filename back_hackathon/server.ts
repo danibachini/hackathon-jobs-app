@@ -5,7 +5,7 @@ import {router} from './app/router';
 
 dotenv.config()
 
-const app = express();
+export const app = express();
 
 
 // ------ Mise en place de sécurité -> pentest 06/10 ------

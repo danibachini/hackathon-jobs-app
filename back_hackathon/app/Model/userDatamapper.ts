@@ -44,13 +44,12 @@ const userDataMapper = {
       const role = determineRole(user.role)
 
       const result = await createUser({
-          email: user.email,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          role: role,
-          password: user.password,
-        }
-      )
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: role,
+        password: user.password,
+      })
 
       return result;
     } catch (err) {

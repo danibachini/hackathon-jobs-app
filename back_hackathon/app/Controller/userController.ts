@@ -20,6 +20,7 @@ const userController = {
       res.status(500).json({ message: "Internal server error" });
     }
 
+    
   },
   signIn: async (req: SignInRequestType, res: Response) => {
     const { email, password } = req.body;
