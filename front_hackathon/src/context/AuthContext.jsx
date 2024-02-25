@@ -37,10 +37,20 @@ export default function AuthContextProvider({children}) {
         }
     }
 
+    const register = async (body) => {
+        try{
+            const {data} = await axios.post("http://localhost:3000/signup", body)
+            console.log(data)
+        }catch(error){
+            console.error(error)
+        }
+    }
+
     return (
         <AuthContext.Provider value={{
             login,
             logout,
+            register,
             isAuthenticated
         }}>
             {children}

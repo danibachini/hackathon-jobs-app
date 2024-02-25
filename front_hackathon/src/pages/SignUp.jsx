@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar/Navbar';
-import Footer from '../components/Footer/Footer';
+import { useNavigate } from 'react-router-dom';
+import {useAuth} from "../hooks/useAuth"
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
-    nom: '',
-    prenom: '',
-    profil: '',
+    lastname: '',
+    firstname: '',
+    role: 'candidate',
     email: '',
-    motDePasse: '',
+    password: '',
   });
+
+  const {register} = useAuth()
+  const navigate = useNavigate()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,18 +25,20 @@ export default function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
+    register(formData)
+    navigate("/signin")
   };
 
   return (
-    <div class = "min-h-screen">
+    <div className = "min-h-screen">
       <form className="form-control flex flex-col w-2/3 mt-20 ml-60" onSubmit={handleSubmit}>
         <label className="label-text">Nom</label>
         <input
           type="text"
           placeholder="Entrez votre nom"
           className="input input-bordered mb-2"
-          name="nom"
-          value={formData.nom}
+          name="lastname"
+          value={formData.lastname}
           onChange={handleInputChange}
         />
 
@@ -42,26 +47,26 @@ export default function SignUp() {
           type="text"
           placeholder="Entrez votre prénom"
           className="input input-bordered mb-2"
-          name="prenom"
-          value={formData.prenom}
+          name="firstname"
+          value={formData.firstname}
           onChange={handleInputChange}
         />
 
         <label className="label-text">Profil</label>
         <select
           className="select select-bordered w-full max-w-xs mb-2"
-          name="profil"
-          value={formData.profil}
+          name="role"
+          value={formData.role}
           onChange={handleInputChange}
         >
-          <option disabled>Choisissez un profil</option>
-          <option>Han Solo</option>
-          <option>Greedo</option>
+          <option>Choisissez un profil</option>
+          <option value="candidate">Candidat</option>
+          <option value="recruiter">Recruteur</option>
         </select>
 
         <label className="label-text">Email</label>
         <input
-          type="text"
+          type="email"
           placeholder="Entrez votre email"
           className="input input-bordered mb-2"
           name="email"
@@ -74,12 +79,12 @@ export default function SignUp() {
           type="password"
           placeholder="Entrez votre mot de passe"
           className="input input-bordered mb-2"
-          name="motDePasse"
-          value={formData.motDePasse}
+          name="password"
+          value={formData.password}
           onChange={handleInputChange}
         />
 
-        <button type="submit">Submit</button>
+        <button type="submit" className='mt-4 btn bg-base-100 rounded-sm'>Submit</button>
       </form>
     </div>
   );
