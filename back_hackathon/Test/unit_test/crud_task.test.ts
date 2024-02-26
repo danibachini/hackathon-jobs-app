@@ -1,6 +1,13 @@
 
 import { describe, expect, it, vi } from "vitest"
 import prisma from "../../libs/__mocks__/prisma"
+import { 
+    createTask, 
+    updateTask, 
+    deleteTask, 
+    findTask, 
+    findAllTasks 
+} from '../../app/Services/taskService';
 
 vi.mock("../../libs/prisma")
 
@@ -27,30 +34,32 @@ describe("Unit test", () => {
         }
 
         prisma.task.create.mockResolvedValue({...mockTask, taskID: 1})
-        task = await prisma.task.create({ data: mockTask as any })
+        task = await createTask(mockTask)
         expect(task.taskID).toBe(1)
         expect(task).not.toBe(null)
     })
-
-    it("should update the created task", async () => {
-        const taskDescriptionUpdate = { description: "This is the updated description" }
-        const updatedTask = { ...task, ...taskDescriptionUpdate }
-        prisma.task.update.mockResolvedValue(updatedTask)
-
-        const updatedTaskFromDb = await prisma.task.update({
-            where: {
-                taskID: task.taskID,
-            },
-            data: updatedTask
-        })
-        expect(updatedTaskFromDb).toEqual(updatedTask)
+    
+    it("should find the task by its ID", async () => {
+        const taskExist = await findTask(task.taskID)
+        expect(taskExist).not.toBe(null)
+        expect(taskExist).toEqual(task)
+    })
+    
+    it("should find all the existing tasks", async () => {
+        const getAllTasks = await findAllTasks()
+        expect(getAllTasks).not.toBe(null)
     })
 
-    it("should delete the task created", async () => {
-        const deleteTask = await prisma.task.delete({
-            where: {
-                taskID: task.taskID
-            },
-        })
+    it("should find the task by its ID and update it", async () => {
+        const taskDescriptionUpdate = { description: "This is the updated description" }
+        const taskUpdated = { ...task, ...taskDescriptionUpdate }
+        prisma.task.update.mockResolvedValue(taskUpdated)
+        const updatedTaskFromDb = await updateTask(task.taskID, taskUpdated)
+        expect(updatedTaskFromDb).toEqual(taskUpdated)
+    })
+
+    it("should find the task by its ID and delete it", async () => {
+        const taskToBeDeleted = await deleteTask(task.taskID)
+        expect(taskToBeDeleted).toBeUndefined();
     })
 })
