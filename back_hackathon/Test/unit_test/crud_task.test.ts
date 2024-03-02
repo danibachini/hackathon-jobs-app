@@ -6,8 +6,10 @@ import {
     updateTask, 
     deleteTask, 
     findTask, 
-    findAllTasks 
+    findAllTasksByUserID,
+    findAllTasksByTreeID 
 } from '../../app/Services/taskService';
+import { Prisma } from "@prisma/client";
 
 vi.mock("../../libs/prisma")
 
@@ -27,27 +29,36 @@ describe("Unit test", () => {
             users: [
                 {
                     userID: 1,
-                    completionDate: "2021-09-27",
+                    completionDate: new Date().toISOString(),
                     status: "Completed"
                 }
             ]
         }
 
         prisma.task.create.mockResolvedValue({...mockTask, taskID: 1})
-        task = await createTask(mockTask)
+        task = await createTask(mockTask as Prisma.TaskCreateInput)
         expect(task.taskID).toBe(1)
         expect(task).not.toBe(null)
     })
     
     it("should find the task by its ID", async () => {
-        const taskExist = await findTask(task.taskID)
+        const mockTask = task
+        prisma.task.findUnique.mockResolvedValue(mockTask)
+        const taskExist = await findTask(mockTask.taskID)
         expect(taskExist).not.toBe(null)
         expect(taskExist).toEqual(task)
     })
     
-    it("should find all the existing tasks", async () => {
-        const getAllTasks = await findAllTasks()
-        expect(getAllTasks).not.toBe(null)
+    it("should find all the existing tasks by userID", async () => {
+        prisma.task.findMany.mockResolvedValue(task)
+        const getAllUserTasks = await findAllTasksByUserID(task.users.userID) 
+        expect(getAllUserTasks).not.toBe(null)
+    })
+    
+    it("should find all the existing tasks by skilltreeID", async () => {
+        prisma.task.findMany.mockResolvedValue(task)
+        const getAllTreeTasks = await findAllTasksByTreeID(task.trees.treeID)
+        expect(getAllTreeTasks).not.toBe(null)
     })
 
     it("should find the task by its ID and update it", async () => {
@@ -59,7 +70,8 @@ describe("Unit test", () => {
     })
 
     it("should find the task by its ID and delete it", async () => {
+        prisma.task.delete.mockResolvedValue(task)
         const taskToBeDeleted = await deleteTask(task.taskID)
-        expect(taskToBeDeleted).toBeUndefined();
+        expect(taskToBeDeleted).toEqual(task);
     })
 })
