@@ -11,52 +11,46 @@ datasource db {
 }
 
 model User {
-  userID            Int        @id @default(autoincrement())
-  firstname         String
-  lastname          String
-  password          String
-  email             String      @unique
-  role              Role        // Peut être 'Recruteur' ou 'Candidat'
-  skillTree         SkillTree[] @relation("UserTree")
-  task              UserTask[]
+  id        Int        @id @default(autoincrement())
+  firstname String
+  lastname  String
+  password  String
+  email     String     @unique
+  role      Role
+  tasks     UserTask[]
 }
 
-model SkillTree {
-  treeID           Int       @id @default(autoincrement())
-  titre            String
-  description      String
-  userID           Int
-  user             User      @relation(fields: [userID], references: [userID], name: "UserTree")
-  task             TreeTask[]
+model JobOffer {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  tasks       JobTask[]
 }
 
 model Task {
-  taskID           Int       @id @default(autoincrement())
-  description      String
-  niveauDifficulte Int
-  trees            TreeTask[]
-  users            UserTask[]
+  id              Int       @id @default(autoincrement())
+  description     String
+  difficultyLevel Int
+  jobTasks        JobTask[]
+  userTasks       UserTask[]
 }
 
-model TreeTask {
-  treeID          Int
-  taskID          Int
-  statusTask      String?          // Optionnel, exemple: 'Complété', 'En attente'
-  trees           SkillTree @relation(fields: [treeID], references: [treeID])
-  task            Task      @relation(fields: [taskID], references: [taskID])
-
-  @@id([treeID, taskID])
+model JobTask {
+  jobOfferId     Int
+  taskId         Int
+  jobOffer       JobOffer @relation(fields: [jobOfferId], references: [id])
+  task           Task     @relation(fields: [taskId], references: [id])
+  @@id([jobOfferId, taskId])
 }
 
 model UserTask {
-  userID           Int
-  taskID           Int
-  completionDate   DateTime?
-  status           String?          // Optionnel, exemple: 'Complété', 'En cours'
-  user             User      @relation(fields: [userID], references: [userID])
-  task             Task      @relation(fields: [taskID], references: [taskID])
-
-  @@id([userID, taskID])
+  userId         Int
+  taskId         Int
+  completionDate DateTime?
+  status         String?  // Optional, example: 'Completed', 'In Progress'
+  user           User     @relation(fields: [userId], references: [id])
+  task           Task     @relation(fields: [taskId], references: [id])
+  @@id([userId, taskId])
 }
 
 enum Role {
