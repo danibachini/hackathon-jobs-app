@@ -25,7 +25,7 @@ const userDataMapper = {
         throw new Error('Invalid email or password');
       }
     
-      const token = jwt.sign({ userId: user.userID, email: user.email, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
       return token;
 
     } catch (err) {

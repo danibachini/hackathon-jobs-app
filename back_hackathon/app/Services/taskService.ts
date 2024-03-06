@@ -10,16 +10,16 @@ export const createTask = async (task: Prisma.TaskCreateInput) => {
 
 export const findTask = async (taskID: number) => {
     return await prisma.task.findUnique({
-        where: { taskID: taskID }
+        where: { id: taskID }
     })
 }
 
 export const findAllTasksByUserID = async (userID: number) => {
     return await prisma.task.findMany({
-        where: { 
+        where: {
             users: {
                 some: {
-                    userID: userID
+                    id: userID
                 }
             }
         }

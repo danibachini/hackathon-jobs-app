@@ -19,13 +19,7 @@ describe("Unit test", () => {
     it("should create a new task", async () => {
         const mockTask = {
             description: "This is a test task",
-            niveauDifficulte: 3, 
-            trees: [
-                {
-                    treeID: 1,
-                    statusTask: "Completed"
-                }
-            ],
+            difficultyLevel: 3,
             users: [
                 {
                     userID: 1,
@@ -35,29 +29,29 @@ describe("Unit test", () => {
             ]
         }
 
-        prisma.task.create.mockResolvedValue({...mockTask, taskID: 1})
+        prisma.task.create.mockResolvedValue({...mockTask, id: 1})
         task = await createTask(mockTask as Prisma.TaskCreateInput)
-        expect(task.taskID).toBe(1)
+        expect(task.id).toBe(1)
         expect(task).not.toBe(null)
     })
     
     it("should find the task by its ID", async () => {
         const mockTask = task
         prisma.task.findUnique.mockResolvedValue(mockTask)
-        const taskExist = await findTask(mockTask.taskID)
+        const taskExist = await findTask(1)
         expect(taskExist).not.toBe(null)
         expect(taskExist).toEqual(task)
     })
     
     it("should find all the existing tasks by userID", async () => {
         prisma.task.findMany.mockResolvedValue(task)
-        const getAllUserTasks = await findAllTasksByUserID(task.users.userID) 
+        const getAllUserTasks = await findAllTasksByUserID(1) 
         expect(getAllUserTasks).not.toBe(null)
     })
     
     it("should find all the existing tasks by skilltreeID", async () => {
         prisma.task.findMany.mockResolvedValue(task)
-        const getAllTreeTasks = await findAllTasksByTreeID(task.trees.treeID)
+        const getAllTreeTasks = await findAllTasksByTreeID(1)
         expect(getAllTreeTasks).not.toBe(null)
     })
 
@@ -65,13 +59,13 @@ describe("Unit test", () => {
         const taskDescriptionUpdate = { description: "This is the updated description" }
         const taskUpdated = { ...task, ...taskDescriptionUpdate }
         prisma.task.update.mockResolvedValue(taskUpdated)
-        const updatedTaskFromDb = await updateTask(task.taskID, taskUpdated)
+        const updatedTaskFromDb = await updateTask(1, taskUpdated)
         expect(updatedTaskFromDb).toEqual(taskUpdated)
     })
 
     it("should find the task by its ID and delete it", async () => {
         prisma.task.delete.mockResolvedValue(task)
-        const taskToBeDeleted = await deleteTask(task.taskID)
+        const taskToBeDeleted = await deleteTask(1)
         expect(taskToBeDeleted).toEqual(task);
     })
 })

@@ -9,14 +9,14 @@ export const createUser = async (user: Prisma.UserCreateInput) => {
 
 export const updateUser = async (user: Prisma.UserUpdateInput, id: number) => {
   return await prisma.user.update({
-    where: {userID: id},
+    where: {id: id},
     data: user
   })
 }
 
 export const deleteUser = async (id: number) => {
   return await prisma.user.delete({
-    where: {userID: id}
+    where: {id: id}
   })
 }
 
@@ -30,11 +30,10 @@ export const getAllUsers = async () => {
   return await prisma.user.findMany()
 }
 
-export const getAllUsersWithSkillTreeAndTasks = async () => {
+export const getAllUsersWithTasks = async () => {
   return await prisma.user.findMany({
     include: {
-      skillTree: true,
-      task: true
+      tasks: true
     }
   })
 }
