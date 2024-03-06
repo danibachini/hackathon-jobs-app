@@ -5,7 +5,7 @@ import {
     getUserByEmail, 
     updateUser, 
     deleteUser
-} from "../../app/Services/userService"
+} from "../../app/Repositories/userRepository"
 import { Role } from "@prisma/client"
 
 vi.mock("../../libs/prisma")

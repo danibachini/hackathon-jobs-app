@@ -1,40 +1,62 @@
+import {createUser, getUserByEmail, getAllUsers} from '../Repositories/userRepository';
+import prisma from '../../libs/prisma';
+import jwt from 'jsonwebtoken';
+import {User} from "../types"
 import {Prisma} from "@prisma/client"
-import prisma from "../../libs/prisma"
+import { passwordCompare, passwordHasher, determineRole } from '../utils/utils';
 
-export const createUser = async (user: Prisma.UserCreateInput) => {
-  return await prisma.user.create({
-    data: user
-  })
-}
+const userDataMapper = {
 
-export const updateUser = async (user: Prisma.UserUpdateInput, id: number) => {
-  return await prisma.user.update({
-    where: {id: id},
-    data: user
-  })
-}
-
-export const deleteUser = async (id: number) => {
-  return await prisma.user.delete({
-    where: {id: id}
-  })
-}
-
-export const getUserByEmail = async (email: string) => {
-  return await prisma.user.findUnique({
-    where: {email: email}
-  })
-}
-
-// WOULD WE USE THIS ?
-// export const getAllUsers = async () => {
-//   return await prisma.user.findMany()
-// }
-
-export const getAllUsersWithTasks = async () => {
-  return await prisma.user.findMany({
-    include: {
-      tasks: true
+  async getAllUsers(){
+    console.log(Prisma.UserScalarFieldEnum)
+    try {
+      return await getAllUsers()
+    }catch(error){
+      return {error: error, results: null}
     }
-  })
-}
+  },
+
+  async signIn({email, password}: {email: string, password: string}) {
+    try {
+  
+      const user = await getUserByEmail(email)
+    
+      if (!user || !await passwordCompare(password, user.password)) {
+        throw new Error('Invalid email or password');
+      }
+    
+      const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+      return token;
+
+    } catch (err) {
+      // Renvoyer l'erreur pour la gestion ultérieure
+      throw err
+    }
+  },
+
+  async signUp(user : User) {
+
+    try {
+
+      const hashedPassword = await passwordHasher(user?.password);
+      user.password = hashedPassword;
+      
+      const role = determineRole(user.role)
+
+      const result = await createUser({
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: role,
+        password: user.password,
+      })
+
+      return result;
+    } catch (err) {
+      console.error("Error in userDataMapper.signUp:", err);
+      throw err; 
+    }
+  },
+};
+
+export default userDataMapper;

@@ -7,7 +7,7 @@ import {
     deleteJobOffer, 
     getJobOfferById, 
     getAllJobOffers 
-} from '../../app/Services/jobOffersService';
+} from '../../app/Repositories/jobOffersRepository';
 
 vi.mock("../../libs/prisma")
 

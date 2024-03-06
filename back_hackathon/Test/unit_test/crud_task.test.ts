@@ -8,7 +8,7 @@ import {
     findTask, 
     findAllTasksByUserID,
     findAllUsersByTaskID
-} from '../../app/Services/taskService';
+} from '../../app/Repositories/taskRepository';
 import { Prisma } from "@prisma/client";
 
 vi.mock("../../libs/prisma")

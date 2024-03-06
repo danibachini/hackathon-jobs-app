@@ -1,8 +1,0 @@
-POST http://localhost:3000/signin/
-Content-Type: application/json
-
-{
-  "mail": "candidate1@example.com",
-  "password": "hashed_password1"
-
-},

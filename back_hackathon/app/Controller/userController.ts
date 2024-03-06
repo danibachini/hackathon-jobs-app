@@ -1,6 +1,6 @@
 import { Response } from "express"
-import userDatamapper from "../Model/userDatamapper"
-import {getUserByEmail} from "../Services/userService"
+import userDatamapper from "../Services/userService"
+import {getUserByEmail} from "../Repositories/userRepository"
 import {SignInRequestType, SignUpRequestType} from "../types"
 
 const userController = {
