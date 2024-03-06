@@ -26,6 +26,17 @@ export const findAllTasksByUserID = async (userID: number) => {
     })
 }
 
+export const findAllUsersByTaskID = async (taskID: number) => {
+    return await prisma.userTask.findMany({
+        where: {
+            taskID: taskID
+        },
+        include: {
+            user: true
+        }
+    })
+}
+
 export const findAllTasksByTreeID = async (treeID: number) => {
     return await prisma.task.findMany({
         where: {
