@@ -8,6 +8,7 @@ import App from "./App"
 import SignUp from "./pages/SignUp"
 import SignIn from "./pages/SignIn"
 import Jobs from "./pages/Jobs"
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"
 
 export const router = createBrowserRouter([
     {
@@ -19,33 +20,33 @@ export const router = createBrowserRouter([
                 element: <HomePage/>
             },
             {
-                path: "/contact",
-                element: <Contact/>
-            },
-            {
-                path: "/profile",
-                element: <Candidate/>
-            },
-            {
                 path: "/job-offers",
                 element: <Jobs />
             },
             {
-                path: "/recruiter",
-                element: <Recruiter/>
+                path: "/contact",
+                element: <Contact/>
             },
             {
                 path: "/sign-in",
                 element: <SignIn/>
             },
             {
+                path: "/sign-up",
+                element: <SignUp />
+            },
+            {
+                path: "/auth/profile",
+                element: <ProtectedRoute><Candidate/></ProtectedRoute>
+            },
+            {
+                path: "/auth/recruiter",
+                element: <ProtectedRoute><Recruiter/></ProtectedRoute>
+            },
+            {
                 path: "*",
                 element: <Error/>
             },
-            {
-                path: "/sign-up",
-                element: <SignUp />
-            }
         ]
     }
 ])

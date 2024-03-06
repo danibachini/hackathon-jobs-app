@@ -1,5 +1,6 @@
 back_hackathon/node_modules
 back_hackathon/.env
+back_hackathon/.env.test
 
 front_hackathon/node_modules
-front_hackathon/node_modules
+back_hackathon/node_modules

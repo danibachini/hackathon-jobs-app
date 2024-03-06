@@ -1,7 +1,8 @@
-const Joi = require('joi');
+import Joi from 'joi';
 // Importation du module Joi, qui est utilisé pour la validation des données
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 // Importation du module jwt pour gérer les jetons JSON Web Token
+import {Request, Response, NextFunction} from "express"
 
 
 
@@ -9,9 +10,9 @@ const schemaUserInput = Joi.object({
     // Définition du schéma de validation pour les données d'inscription
     email: Joi.string().email().required(),
     // Champ "email" doit être une chaîne de caractères au format email et est requis
-    last_name: Joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_-]{2,14}$')),
-    first_name: Joi.string().required(),
-    profile: Joi.string().valid('candidate', 'company', 'admin').required(),
+    lastname: Joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_-]{2,14}$')),
+    firstname: Joi.string().required(),
+    role: Joi.string().valid('candidate', 'recruiter', 'admin').required(),
     // Champ "name" doit suivre un certain modèle (regex)
     password: Joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_-]{6,18}$')),
     // Champ "password" doit suivre un certain modèle (regex)
@@ -24,8 +25,8 @@ const schemaUserLogin = Joi.object({
     // Champ "password" doit suivre un certain modèle (regex) et est requis
 });
 
-module.exports = {
-    checkSignUpData(req, res, next) {
+export const validationService = {
+    checkSignUpData(req: Request, res: Response, next: NextFunction) {
         let { error } = schemaUserInput.validate(req.body);
         // Validation des données d'inscription
         if (!error) {
@@ -38,7 +39,7 @@ module.exports = {
             // Passez l'erreur à la fonction de gestion des erreurs
         }
     },
-    checkLoginData(req, res, next) {
+    checkLoginData(req: Request, res: Response, next: NextFunction) {
         let { error } = schemaUserLogin.validate(req.body);
         // Validation des données de connexion
         if (!error) {
@@ -51,14 +52,20 @@ module.exports = {
             // Passez l'erreur à la fonction de gestion des erreurs
         }
     },
-    checkToken(req,res,next){
+    checkToken(req: Request, res: Response, next: NextFunction){
         try{
-            const token = req.headers.authorization.split(" ")[1];
-            jwt.verify(token,process.env.JWT_SECRET);
-            next();
+          const token = req.headers.authorization?.split(" ")[1];
+          // Extraction du token d'authentification de la requête (req.headers.authorization)
+          const decoded = jwt.verify(token as string, process.env.JWT_SECRET as string);
+          // Verification du token en utilisant le JWT_SECRET
+          if (decoded) {
+            // Si le token est valide, renvoie un objet JSON indiquant que le token est valide
+            return res.json({ message: "Utilisateur re connecté avec succès.", token,});
+          }
+          next();
         }
         catch(error){
-            next(error);
+          return res.status(403);
         }
-    }
+      }
 };
