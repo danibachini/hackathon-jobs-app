@@ -7,7 +7,6 @@ import {
     deleteTask, 
     findTask, 
     findAllTasksByUserID,
-    findAllTasksByTreeID, 
     findAllUsersByTaskID
 } from '../../app/Services/taskService';
 import { Prisma } from "@prisma/client";
@@ -54,13 +53,6 @@ describe("Unit test", () => {
         prisma.task.findMany.mockResolvedValue(task)
         const findAllTasks = await findAllUsersByTaskID(task.taskID)
         expect(findAllTasks).not.toBe(null)
-    })
-    
-    // TO BE UPDATED - TREES DON'T EXIST ANYMORE, REPLACE FOR OFFERS --------
-    it("should find all the existing tasks by skilltreeID", async () => {
-        prisma.task.findMany.mockResolvedValue(task)
-        const getAllTreeTasks = await findAllTasksByTreeID(1)
-        expect(getAllTreeTasks).not.toBe(null)
     })
 
     it("should find the task by its ID and update it", async () => {
