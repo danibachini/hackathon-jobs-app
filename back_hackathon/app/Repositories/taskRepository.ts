@@ -37,8 +37,6 @@ export const findAllUsersByTaskID = async (taskID: number) => {
     })
 }
 
-
-
 export const updateTask = async (taskID: number, task: Prisma.TaskUpdateInput) => {
     return await prisma.task.update({
         where: { id: taskID },

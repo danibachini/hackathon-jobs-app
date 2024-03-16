@@ -21,9 +21,9 @@ describe("Unit tests", ()=>{
             password: "hashedpass", 
             role: Role.CANDIDATE
         }
-        prisma.user.create.mockResolvedValue({...mockUser, userID: 1})
+        prisma.user.create.mockResolvedValue({...mockUser, id: 1})
         user = await createUser(mockUser)
-        expect(user).toStrictEqual({...mockUser, userID: 1})
+        expect(user).toStrictEqual({...mockUser, id: 1})
     })
 
     it("should find the user by its email", async () => {
@@ -37,13 +37,13 @@ describe("Unit tests", ()=>{
         const newUserEmail = { email: "a.silver@prisma.com" }
         const userDataUpdated = { ...user, ...newUserEmail }
         prisma.user.update.mockResolvedValue(userDataUpdated)
-        const dataUpdatedFromDb = await updateUser(userDataUpdated, user.userID)
+        const dataUpdatedFromDb = await updateUser(userDataUpdated, user.id)
         expect(dataUpdatedFromDb).toEqual(userDataUpdated)
     })
 
     it("should find the user by its ID and delete it", async () => {
         prisma.user.delete.mockResolvedValue(user)
-        const deletedUserFromDb = await deleteUser(user.userID)
+        const deletedUserFromDb = await deleteUser(user.id)
         expect(deletedUserFromDb).toEqual(user)
     })
 })

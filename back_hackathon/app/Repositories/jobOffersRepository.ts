@@ -7,7 +7,7 @@ export const createJobOffer = async (jobOffer: Prisma.JobOfferCreateInput) => {
   })
 }
 
-export const updateJobOffer = async (jobOffer: Prisma.JobOfferUpdateInput, id: number) => {
+export const updateJobOffer = async (id: number, jobOffer: Prisma.JobOfferUpdateInput) => {
   return await prisma.jobOffer.update({
     where: {id},
     data: jobOffer
@@ -26,6 +26,13 @@ export const getJobOfferById = async (id: number) => {
   })
 }
 
-export const getAllJobOffers = async () => {
-  return await prisma.jobOffer.findMany()
+export const getAllTasksFromJobOffer = async (jobOfferId: number) => {
+  return await prisma.jobOffer.findFirst({
+    where: {
+      id: jobOfferId
+    }, 
+    include: {
+      tasks: true
+    }
+  })
 }

@@ -1,6 +1,6 @@
 import {Router} from 'express'
-import {validationService} from './Security_module/validationService';
-import userController from './Controller/userController';
+import {validationService} from '../Security_module/validationService';
+import userController from '../Controller/userController';
 
 export const router = Router()
 
