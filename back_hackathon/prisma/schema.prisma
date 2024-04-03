@@ -11,20 +11,22 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  firstname String
-  lastname  String
-  password  String
-  email     String     @unique
-  role      Role
-  tasks     UserTask[]
+  id            Int        @id @default(autoincrement())
+  firstname     String
+  lastname      String
+  password      String
+  email         String     @unique
+  role          Role
+  tasks         UserTask[]
+  jobApplied    JobApplication[]
 }
 
 model JobOffer {
-  id          Int        @id @default(autoincrement())
-  title       String
-  description String
-  tasks       JobTask[]
+  id                Int        @id @default(autoincrement())
+  title             String
+  description       String
+  tasks             JobTask[]
+  jobApplication    JobApplication[]
 }
 
 model Task {
@@ -33,6 +35,14 @@ model Task {
   difficultyLevel Int
   jobTasks        JobTask[]
   userTasks       UserTask[]
+}
+
+model JobApplication {
+  userId          Int
+  jobOfferId      Int
+  user            User        @relation(fields: [userId], references: [id])
+  jobOffer        JobOffer    @relation(fields: [jobOfferId], references: [id])
+  @@id([userId, jobOfferId])
 }
 
 model JobTask {

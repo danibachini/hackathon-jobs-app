@@ -6,8 +6,10 @@ import {
     updateJobOffer, 
     deleteJobOffer, 
     getJobOfferById, 
-    getAllTasksFromJobOffer 
+    getAllTasksFromJobOffer,
+    getAllJobOffersApplied
 } from '../../app/Repositories/jobOffersRepository';
+import { Role } from "@prisma/client";
 
 vi.mock("../../libs/prisma")
 
@@ -40,6 +42,38 @@ describe("Unit test for job offers", () => {
         const allTasksFromJobOffer = await getAllTasksFromJobOffer(1)
         expect(allTasksFromJobOffer).toEqual(jobOffer)
     })
+
+    // FIND ALL JOBOFFERS THAT A CERTAIN USER APPLIED TO
+    // create a user mock
+
+    // WRITE THIS IN THE OFFERS
+    it("should find all the job offers the user applied to", async () => {
+        const mockUser = {
+            firstname: "Adam", 
+            lastname: "Silver", 
+            email: "adam@prisma.com", 
+            password: "hashedpass", 
+            role: Role.CANDIDATE,
+            jobApplied: [
+                {
+                    jobOffer: {
+                        id: 1,
+                        title: "Title of the job offer",
+                        description: "this is the job offer description"
+                    }
+                }
+            ]
+        }
+        prisma.user.findUnique.mockResolvedValue(mockUser);
+        prisma.user.create.mockResolvedValue({...mockUser, id: 1})
+
+        const jobOffersApplied = await getAllJobOffersApplied(1)
+        console.log(jobOffersApplied);
+        expect(jobOffersApplied).not.toBe(null)
+    })
+
+    // FIND ALL USERS THAT APPLIED TO A CERTAIN JOBOFFER
+    
 
     it("should find the job offer by its ID and update it", async () => {
         const newDescription = { description: "This is the updated description" }

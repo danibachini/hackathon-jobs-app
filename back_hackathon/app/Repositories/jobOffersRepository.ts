@@ -36,3 +36,18 @@ export const getAllTasksFromJobOffer = async (jobOfferId: number) => {
     }
   })
 }
+
+export const getAllJobOffersApplied = async (id: number) => {
+  const user = await prisma.user.findUnique({
+    where: {id: id},
+    include: {
+      jobApplied: {
+        include: {
+          jobOffer: true
+        }
+      }
+    }
+  })
+
+  return user?.jobApplied?.map((application) => application.jobOffer) ?? [];
+}

@@ -51,7 +51,7 @@ describe("Unit test", () => {
 
     it("should find all users who executed a specific task", async () => {
         prisma.task.findMany.mockResolvedValue(task)
-        const findAllTasks = await findAllUsersByTaskID(task.id)
+        const findAllTasks = await findAllUsersByTaskID(1)
         expect(findAllTasks).not.toBe(null)
     })
 

@@ -27,9 +27,9 @@ export const getUserByEmail = async (email: string) => {
 }
 
 // WOULD WE USE THIS ?
-// export const getAllUsers = async () => {
-//   return await prisma.user.findMany()
-// }
+export const getAllUsers = async () => {
+  return await prisma.user.findMany()
+}
 
 export const getAllUsersWithTasks = async () => {
   return await prisma.user.findMany({
